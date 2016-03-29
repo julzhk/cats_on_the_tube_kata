@@ -1,5 +1,5 @@
 import unittest
-from mapping_elements import Node, read_datafile, Graph
+from mapping_elements import Node, read_datafile, Graph, Station
 
 class TestMap(unittest.TestCase):
 
@@ -50,8 +50,16 @@ class TestCreateTubeMap(unittest.TestCase):
         self.assertIn(4,tubegraph.nodes[1].connections)
         self.assertTrue(len(tubegraph.nodes[1].connections),2)
 
+class TestOccupiedStatus(unittest.TestCase):
 
-
+    def test_simple_add_occupiers(self):
+        mapnode = Node(name='Aldgate',id = 2)
+        mapnode.handler = Station()
+        mapnode.handler.addowner(1)
+        mapnode.handler.addowner(2)
+        mapnode.handler.addcat(3)
+        self.assertEquals(len(mapnode.handler.owners), 2)
+        self.assertEquals(len(mapnode.handler.cats), 1)
 
 
 if __name__ == '__main__':

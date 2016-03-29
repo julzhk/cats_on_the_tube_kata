@@ -4,6 +4,7 @@ class Node(object):
     """
     A map node
     """
+    handler = None
 
     def __init__(self,name='anon', id=-1):
         self.name = name
@@ -32,6 +33,18 @@ class Graph(object):
     def readconnections(self, fn):
         for [from_id, to_id] in read_datafile(fn):
             self.nodes[int(from_id)].addconnection(int(to_id))
+
+class Station(object):
+
+    def __init__(self):
+        self.owners = set()
+        self.cats = set()
+
+    def addowner(self, owner_id):
+        self.owners.add(owner_id)
+
+    def addcat(self, cat_id):
+        self.cats.add(cat_id)
 
 
 def read_datafile(fn, delimiter=','):
