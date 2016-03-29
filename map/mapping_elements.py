@@ -23,11 +23,15 @@ class Node(object):
 class Graph(object):
 
     def __init__(self):
-        self.nodes = []
+        self.nodes = {}
 
-    def readnodefile(self,fn):
-        for row in read_datafile(fn):
-            self.nodes.append(Node(name=row[1],id=row[0]))
+    def readnodefile(self, fn):
+        for [node_id, node_name] in read_datafile(fn):
+            self.nodes[int(node_id)] = Node(name=node_name, id=int(node_id))
+
+    def readconnections(self, fn):
+        for [from_id, to_id] in read_datafile(fn):
+            self.nodes[int(from_id)].addconnection(int(to_id))
 
 
 def read_datafile(fn, delimiter=','):

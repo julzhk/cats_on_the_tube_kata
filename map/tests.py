@@ -38,8 +38,19 @@ class TestCreateTubeMap(unittest.TestCase):
         tubegraph = Graph()
         tubegraph.readnodefile('simple_map_data.csv')
         self.assertEquals(len(tubegraph.nodes),5)
-        self.assertEquals(tubegraph.nodes[0], Node(name='Acton Town',id='1'))
-        self.assertEquals(tubegraph.nodes[0], Node(name='Acton Town',id=1))
+        self.assertEquals(tubegraph.nodes[1], Node(name='Acton Town',id='1'))
+        self.assertEquals(tubegraph.nodes[1], Node(name='Acton Town',id=1))
+
+
+    def test_create_tube_connections(self):
+        tubegraph = Graph()
+        tubegraph.readnodefile('simple_map_data.csv')
+        tubegraph.readconnections('simple_map_connections.csv')
+        self.assertIn(3,tubegraph.nodes[1].connections)
+        self.assertIn(4,tubegraph.nodes[1].connections)
+        self.assertTrue(len(tubegraph.nodes[1].connections),2)
+
+
 
 
 
