@@ -1,10 +1,37 @@
 import csv
 
+class Station(object):
+
+    def __init__(self):
+        self.owners = set()
+        self.cats = set()
+        self.open = True
+
+    @property
+    def closed(self):
+        return not self.open
+
+    def addowner(self, owner_id):
+        self.owners.add(owner_id)
+        self.check_found()
+
+    def addcat(self, cat_id):
+        self.cats.add(cat_id)
+        self.check_found()
+
+    def check_found(self):
+        found_set = self.cats.intersection(self.owners)
+        if found_set:
+            self.cats = self.cats.difference(found_set)
+            self.owners = self.owners.difference(found_set)
+            self.open = False
+
+
 class Node(object):
     """
     A map node
     """
-    handler = None
+    occupiers = Station()
 
     def __init__(self,name='anon', id=-1):
         self.name = name
@@ -34,17 +61,6 @@ class Graph(object):
         for [from_id, to_id] in read_datafile(fn):
             self.nodes[int(from_id)].addconnection(int(to_id))
 
-class Station(object):
-
-    def __init__(self):
-        self.owners = set()
-        self.cats = set()
-
-    def addowner(self, owner_id):
-        self.owners.add(owner_id)
-
-    def addcat(self, cat_id):
-        self.cats.add(cat_id)
 
 
 def read_datafile(fn, delimiter=','):

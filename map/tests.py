@@ -54,12 +54,23 @@ class TestOccupiedStatus(unittest.TestCase):
 
     def test_simple_add_occupiers(self):
         mapnode = Node(name='Aldgate',id = 2)
-        mapnode.handler = Station()
-        mapnode.handler.addowner(1)
-        mapnode.handler.addowner(2)
-        mapnode.handler.addcat(3)
-        self.assertEquals(len(mapnode.handler.owners), 2)
-        self.assertEquals(len(mapnode.handler.cats), 1)
+        mapnode.occupiers = Station()
+        mapnode.occupiers.addowner(1)
+        mapnode.occupiers.addowner(2)
+        mapnode.occupiers.addcat(3)
+        self.assertEquals(len(mapnode.occupiers.owners), 2)
+        self.assertEquals(len(mapnode.occupiers.cats), 1)
+
+    def test_simple_cat_found(self):
+        mapnode = Node(name='Aldgate',id = 2)
+        mapnode.occupiers = Station()
+        self.assertEquals(mapnode.occupiers.closed, False)
+        mapnode.occupiers.addowner(1)
+        mapnode.occupiers.addowner(2)
+        mapnode.occupiers.addcat(1)
+        self.assertEquals(len(mapnode.occupiers.owners), 1)
+        self.assertEquals(len(mapnode.occupiers.cats), 0)
+        self.assertEquals(mapnode.occupiers.closed, True)
 
 
 if __name__ == '__main__':
