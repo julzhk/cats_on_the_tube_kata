@@ -2,10 +2,12 @@ import csv
 
 class Station(object):
 
-    def __init__(self):
+    def __init__(self, parent=None):
         self.owners = set()
         self.cats = set()
         self.open = True
+        self.parent = parent
+        self.findlog = []
 
     @property
     def closed(self):
@@ -25,18 +27,32 @@ class Station(object):
             self.cats = self.cats.difference(found_set)
             self.owners = self.owners.difference(found_set)
             self.open = False
+            self.log_finds(found_set=found_set)
+            self.outputfinds()
 
+    def log_finds(self,found_set):
+        self.findlog = []
+        for id in found_set:
+            if self.parent:
+                station_msg = " - {station} is now closed".format(station=self.parent.name)
+            else:
+                station_msg = ''
+            self.findlog.append("Owner {id} found cat {id}{station_msg}".format(id=id,station_msg=station_msg))
+    def outputfinds(self):
+        for find in self.findlog:
+            print find
 
 class Node(object):
     """
     A map node
     """
-    occupiers = Station()
+    occupiers = None
 
     def __init__(self,name='anon', id=-1):
         self.name = name
         self.id = int(id)
         self.connections = set()
+        self.occupiers = Station(self)
 
     def __eq__(self, other):
         return self.name == other.name and self.id == other.id

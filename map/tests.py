@@ -63,7 +63,6 @@ class TestOccupiedStatus(unittest.TestCase):
 
     def test_simple_cat_found(self):
         mapnode = Node(name='Aldgate',id = 2)
-        mapnode.occupiers = Station()
         self.assertEquals(mapnode.occupiers.closed, False)
         mapnode.occupiers.addowner(1)
         mapnode.occupiers.addowner(2)
@@ -71,6 +70,7 @@ class TestOccupiedStatus(unittest.TestCase):
         self.assertEquals(len(mapnode.occupiers.owners), 1)
         self.assertEquals(len(mapnode.occupiers.cats), 0)
         self.assertEquals(mapnode.occupiers.closed, True)
+        self.assertEquals('Owner 1 found cat 1 - Aldgate is now closed', mapnode.occupiers.findlog[0])
 
 
 if __name__ == '__main__':
