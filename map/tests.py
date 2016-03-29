@@ -1,5 +1,5 @@
 import unittest
-from mapping_elements import Node, read_datafile
+from mapping_elements import Node, read_datafile, Graph
 
 class TestMap(unittest.TestCase):
 
@@ -25,7 +25,7 @@ class TestCreateTubeMap(unittest.TestCase):
 
     def test_read_datafile(self):
         simplefile = 'simple_map_data.csv'
-        for i, [node_id, nodename] in enumerate(read_datafile(simplefile),start=1):
+        for i, [node_id, nodename] in enumerate(read_datafile(simplefile), start=1):
             self.assertEquals(int(node_id), i)
             if i == 1:
                 self.assertEquals(nodename,'Acton Town')
@@ -33,6 +33,13 @@ class TestCreateTubeMap(unittest.TestCase):
                 self.assertEquals(nodename,'Aldgate')
             if i == 5:
                 self.assertEquals(nodename,'Alperton')
+
+    def test_create_tube_graph(self):
+        tubegraph = Graph()
+        tubegraph.readnodefile('simple_map_data.csv')
+        self.assertEquals(len(tubegraph.nodes),5)
+        self.assertEquals(tubegraph.nodes[0], Node(name='Acton Town',id='1'))
+        self.assertEquals(tubegraph.nodes[0], Node(name='Acton Town',id=1))
 
 
 
