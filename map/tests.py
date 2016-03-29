@@ -1,4 +1,5 @@
 import unittest
+from mapping_elements import Node
 
 class TestMap(unittest.TestCase):
 
