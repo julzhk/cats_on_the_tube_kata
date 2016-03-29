@@ -1,5 +1,5 @@
 import unittest
-from mapping_elements import Node
+from mapping_elements import Node, read_datafile
 
 class TestMap(unittest.TestCase):
 
@@ -20,6 +20,20 @@ class TestMap(unittest.TestCase):
         self.assertEquals(mapnode.id, 2)
         self.assertIn(156, mapnode.connections)
         self.assertIn(263, mapnode.connections)
+
+class TestCreateTubeMap(unittest.TestCase):
+
+    def test_read_datafile(self):
+        simplefile = 'simple_map_data.csv'
+        for i, [node_id, nodename] in enumerate(read_datafile(simplefile),start=1):
+            self.assertEquals(int(node_id), i)
+            if i == 1:
+                self.assertEquals(nodename,'Acton Town')
+            if i == 2:
+                self.assertEquals(nodename,'Aldgate')
+            if i == 5:
+                self.assertEquals(nodename,'Alperton')
+
 
 
 if __name__ == '__main__':
