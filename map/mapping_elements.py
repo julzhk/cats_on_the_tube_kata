@@ -1,4 +1,5 @@
 import csv
+import random
 
 class Station(object):
 
@@ -82,16 +83,31 @@ class Player(object):
     def __init__(self,id=0):
         self.id = id
 
-    def move(self):
+    def move(self, destinations, seed=None):
         raise NotImplementedError()
 
 class Cat(Player):
-    def move(self):
+    def move(self, destinations, seed=None):
         pass
 
 class Owner(Player):
-    def move(self):
-        pass
+
+    visited = set()
+
+    def move(self,destinations, seed=None):
+        possible_destinations = set(destinations)
+        possible_destinations = possible_destinations.difference(self.visited)
+        # only backtrack if there's no alternative
+        if len(possible_destinations) == 0:
+            possible_destinations = set(destinations)
+        if seed is not None:
+            random.seed(seed)
+        try:
+            new_destination = random.choice(list(possible_destinations))
+            self.visited.add(new_destination)
+            return new_destination
+        except IndexError:
+            return None
 
 
 def read_datafile(fn, delimiter=','):

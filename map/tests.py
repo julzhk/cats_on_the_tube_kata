@@ -79,6 +79,10 @@ class TestPlayers(unittest.TestCase):
         owner1 = Owner(id=1)
         self.assertEquals(owner1.id, 1)
 
+    def test_create_cats(self):
+        cat1 = Cat(id=3)
+        self.assertEquals(cat1.id, 3)
+
     def test_simple_add_occupiers_classes(self):
         mapnode = Node(name='Aldgate',id = 2)
         mapnode.occupiers = Station()
@@ -88,6 +92,27 @@ class TestPlayers(unittest.TestCase):
         mapnode.occupiers.addcat(Cat())
         self.assertEquals(len(mapnode.occupiers.owners), 2)
         self.assertEquals(len(mapnode.occupiers.cats), 1)
+
+class TestMoveOwners(unittest.TestCase):
+
+    def test_move_owners(self):
+        """
+        Owners try not to back track on themselves, unless they have no choice
+        """
+        owner1 = Owner(id=1)
+        dest = owner1.move(destinations = [1,2,3,4],seed=0)
+        self.assertEquals(dest,4)
+        dest = owner1.move(destinations = [1,2,3,4],seed=0)
+        self.assertEquals(dest,3)
+        dest = owner1.move(destinations = [1,2,3,4],seed=0)
+        self.assertEquals(dest,2)
+        dest = owner1.move(destinations = [1,2,3,4],seed=0)
+        self.assertEquals(dest,1)
+        dest = owner1.move(destinations = [1,2,3,4],seed=0)
+        self.assertEquals(dest, 4)
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
