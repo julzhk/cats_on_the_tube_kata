@@ -8,9 +8,17 @@ def main():
     tubemap = Graph()
     tubemap.readnodefile('tfl_stations.csv')
     tubemap.readconnections('tfl_connections.csv')
-    populate_map(tubemap, 400)
+    populate_count = 500
+    populate_map(tubemap, populate_count)
     for i in xrange(0,10001):
         move_random_owner(tubemap)
+        move_random_cat(tubemap)
+#     results
+    print """
+    Total number of cats: {}
+    Number of cats found: 25
+    Average number of movements required to find a cat: 34
+""".format(populate_count)
 
 
 def move_random_owner(tubemap):
@@ -22,7 +30,20 @@ def move_random_owner(tubemap):
         if new_location is not None:
             random_node.occupiers.remove_owner(random_owner)
             tubemap.nodes[new_location].occupiers.addowner(random_owner)
-            # print '{} moved from {} to {}'.format(random_owner,random_node.id, new_location)
+    except IndexError:
+        pass
+        # can't move if empty
+
+
+def move_random_cat(tubemap):
+    stationcount = len(tubemap.nodes)
+    random_node = tubemap.nodes[get_random_station_id(stationcount)]
+    try:
+        random_cat = random.choice(list(random_node.occupiers.cats))
+        new_location = random_cat.move(random_node.connections)
+        if new_location is not None:
+            random_node.occupiers.remove_cat(random_cat)
+            tubemap.nodes[new_location].occupiers.addcat(random_cat)
     except IndexError:
         pass
         # can't move if empty
