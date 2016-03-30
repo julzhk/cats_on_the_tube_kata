@@ -14,22 +14,37 @@ class Station(object):
     def closed(self):
         return not self.open
 
-    def addowner(self, owner_id):
-        self.owners.add(owner_id)
+    def addowner(self, owner):
+        self.owners.add(owner)
         self.check_found()
 
-    def addcat(self, cat_id):
-        self.cats.add(cat_id)
+    def remove_owner(self, owner):
+        self.owners.remove(owner)
+
+    def remove_cat(self, cat):
+        self.cats.remove(cat)
+
+    def addcat(self, cat):
+        self.cats.add(cat)
         self.check_found()
 
     def check_found(self):
-        found_set = self.cats.intersection(self.owners)
+        cat_ids = {item.id for item in self.cats}
+        owner_ids = {item.id for item in self.owners}
+        found_set = cat_ids.intersection(owner_ids)
         if found_set:
             self.cats = self.cats.difference(found_set)
             self.owners = self.owners.difference(found_set)
             self.open = False
             self.log_finds(found_set=found_set)
             self.outputfinds()
+            for cat in self.cats.copy():
+                if cat.id in found_set:
+                    self.cats.remove(cat)
+            for owner in self.owners.copy():
+                if owner.id in found_set:
+                    self.owners.remove(owner)
+
 
     def log_finds(self,found_set):
         self.findlog = []
@@ -77,6 +92,7 @@ class Graph(object):
     def readconnections(self, fn):
         for [from_id, to_id] in read_datafile(fn):
             self.nodes[int(from_id)].addconnection(int(to_id))
+            self.nodes[int(to_id)].addconnection(int(from_id))
 
 class Player(object):
 
@@ -85,6 +101,9 @@ class Player(object):
 
     def move(self, destinations, seed=None):
         raise NotImplementedError()
+
+    def __repr__(self):
+        return '{} : id {}'.format(self.__class__.__name__ ,self.id)
 
 class Cat(Player):
     def move(self, destinations, seed=None):

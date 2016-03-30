@@ -8,7 +8,7 @@ def main():
     tubemap = Graph()
     tubemap.readnodefile('tfl_stations.csv')
     tubemap.readconnections('tfl_connections.csv')
-    populate_map(tubemap)
+    populate_map(tubemap, 400)
     for i in xrange(0,10001):
         move_random_owner(tubemap)
 
@@ -28,9 +28,9 @@ def move_random_owner(tubemap):
         # can't move if empty
 
 
-def populate_map(tubemap):
+def populate_map(tubemap, player_count):
     stationcount = len(tubemap.nodes)
-    for i in range(1, 5000):
+    for i in range(1, player_count):
         cat_origin, owner_origin = generate_origins(stationcount)
         tubemap.nodes[cat_origin].occupiers.addcat(Cat(id=i))
         tubemap.nodes[owner_origin].occupiers.addowner(Owner(id=i))

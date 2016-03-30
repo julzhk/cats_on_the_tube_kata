@@ -55,18 +55,19 @@ class TestOccupiedStatus(unittest.TestCase):
     def test_simple_add_occupiers(self):
         mapnode = Node(name='Aldgate',id = 2)
         mapnode.occupiers = Station()
-        mapnode.occupiers.addowner(1)
-        mapnode.occupiers.addowner(2)
-        mapnode.occupiers.addcat(3)
+        mapnode.occupiers.addowner(Owner(id=1))
+        mapnode.occupiers.addowner(Owner(id=2))
+        mapnode.occupiers.addcat(Cat(id=3))
         self.assertEquals(len(mapnode.occupiers.owners), 2)
         self.assertEquals(len(mapnode.occupiers.cats), 1)
 
     def test_simple_cat_found(self):
         mapnode = Node(name='Aldgate',id = 2)
         self.assertEquals(mapnode.occupiers.closed, False)
-        mapnode.occupiers.addowner(1)
-        mapnode.occupiers.addowner(2)
-        mapnode.occupiers.addcat(1)
+        mapnode.occupiers.addowner(Owner(id=1))
+        mapnode.occupiers.addowner(Owner(id=2))
+        mapnode.occupiers.addcat(Cat(id=1))
+        # should remove cat & owner when found!
         self.assertEquals(len(mapnode.occupiers.owners), 1)
         self.assertEquals(len(mapnode.occupiers.cats), 0)
         self.assertEquals(mapnode.occupiers.closed, True)
@@ -87,9 +88,9 @@ class TestPlayers(unittest.TestCase):
         mapnode = Node(name='Aldgate',id = 2)
         mapnode.occupiers = Station()
 
-        mapnode.occupiers.addowner(Owner())
-        mapnode.occupiers.addowner(Owner())
-        mapnode.occupiers.addcat(Cat())
+        mapnode.occupiers.addowner(Owner(id=1))
+        mapnode.occupiers.addowner(Owner(id=2))
+        mapnode.occupiers.addcat(Cat(id=3))
         self.assertEquals(len(mapnode.occupiers.owners), 2)
         self.assertEquals(len(mapnode.occupiers.cats), 1)
 
