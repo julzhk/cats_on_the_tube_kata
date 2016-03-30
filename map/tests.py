@@ -111,6 +111,18 @@ class TestMoveOwners(unittest.TestCase):
         dest = owner1.move(destinations = [1,2,3,4],seed=0)
         self.assertEquals(dest, 4)
 
+    def test_move_cats(self):
+        """
+        Cats move randomly
+        """
+        owner1 = Cat(id=1)
+        dest = owner1.move(destinations = [1,2,3,4],seed=0)
+        self.assertEquals(dest, 4)
+        dest = owner1.move(destinations = [1,2,3,4],seed=0)
+        self.assertEquals(dest, 4)
+        dest = owner1.move(destinations = [1,2,3,4],seed=0)
+        self.assertEquals(dest, 4)
+
 
 
 

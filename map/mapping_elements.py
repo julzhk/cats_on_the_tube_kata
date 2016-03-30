@@ -88,7 +88,15 @@ class Player(object):
 
 class Cat(Player):
     def move(self, destinations, seed=None):
-        pass
+        possible_destinations = set(destinations)
+        if seed is not None:
+            random.seed(seed)
+        try:
+            new_destination = random.choice(list(possible_destinations))
+            return new_destination
+        except IndexError:
+            return None
+
 
 class Owner(Player):
 
