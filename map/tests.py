@@ -1,5 +1,5 @@
 import unittest
-from mapping_elements import Node, read_datafile, Graph, Station
+from mapping_elements import Node, read_datafile, Graph, Station, Owner, Cat
 
 class TestMap(unittest.TestCase):
 
@@ -72,6 +72,22 @@ class TestOccupiedStatus(unittest.TestCase):
         self.assertEquals(mapnode.occupiers.closed, True)
         self.assertEquals('Owner 1 found cat 1 - Aldgate is now closed', mapnode.occupiers.findlog[0])
 
+
+class TestPlayers(unittest.TestCase):
+
+    def test_create_owners(self):
+        owner1 = Owner(id=1)
+        self.assertEquals(owner1.id, 1)
+
+    def test_simple_add_occupiers_classes(self):
+        mapnode = Node(name='Aldgate',id = 2)
+        mapnode.occupiers = Station()
+
+        mapnode.occupiers.addowner(Owner())
+        mapnode.occupiers.addowner(Owner())
+        mapnode.occupiers.addcat(Cat())
+        self.assertEquals(len(mapnode.occupiers.owners), 2)
+        self.assertEquals(len(mapnode.occupiers.cats), 1)
 
 if __name__ == '__main__':
     unittest.main()

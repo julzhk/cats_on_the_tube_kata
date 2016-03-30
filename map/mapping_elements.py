@@ -77,6 +77,21 @@ class Graph(object):
         for [from_id, to_id] in read_datafile(fn):
             self.nodes[int(from_id)].addconnection(int(to_id))
 
+class Player(object):
+
+    def __init__(self,id=0):
+        self.id = id
+
+    def move(self):
+        raise NotImplementedError()
+
+class Cat(Player):
+    def move(self):
+        pass
+
+class Owner(Player):
+    def move(self):
+        pass
 
 
 def read_datafile(fn, delimiter=','):
