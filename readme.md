@@ -15,7 +15,8 @@ Determine how likely is that an owner will find their cat:
 - Every time an owner finds their cat, the amount of love released is SO big
 that TFL needs to close the station to clean the love from the walls.
 
-- When a station is closed, owners and cats at the station will leave it as usual, but nobody can visit this station again.
+- When a station is closed, owners and cats at the station will leave it as usual, 
+but nobody can visit this station again.
 
 - It is possible that owners or cats can get trapped at a station because there are 
 no available routes to leave -- that's ok, we don't care - that's life.

@@ -9,6 +9,7 @@ class Station(object):
         self.open = True
         self.parent = parent
         self.findlog = []
+        self.foundcats = []
 
     @property
     def closed(self):
@@ -22,6 +23,7 @@ class Station(object):
         self.owners.remove(owner)
 
     def remove_cat(self, cat):
+        self.foundcats.append(cat)
         self.cats.remove(cat)
 
     def addcat(self, cat):
@@ -96,6 +98,8 @@ class Graph(object):
 
 class Player(object):
 
+    moves = 0
+
     def __init__(self,id=0):
         self.id = id
 
@@ -105,7 +109,11 @@ class Player(object):
     def __repr__(self):
         return '{} : id {}'.format(self.__class__.__name__ ,self.id)
 
+class NoDestinationException(Exception):
+    pass
+
 class Cat(Player):
+
     def move(self, destinations, seed=None):
         possible_destinations = set(destinations)
         if seed is not None:
@@ -114,7 +122,7 @@ class Cat(Player):
             new_destination = random.choice(list(possible_destinations))
             return new_destination
         except IndexError:
-            return None
+            raise NoDestinationException()
 
 
 class Owner(Player):
@@ -134,7 +142,7 @@ class Owner(Player):
             self.visited.add(new_destination)
             return new_destination
         except IndexError:
-            return None
+            raise NoDestinationException()
 
 
 def read_datafile(fn, delimiter=','):

@@ -1,52 +1,70 @@
-from mapping_elements import Node, read_datafile, Graph, Station, Owner, Cat
+from mapping_elements import Node, read_datafile, Graph, Station, Owner, Cat, NoDestinationException
 import random
+import itertools
+import argparse
+
 
 NON_EXISTANT_STATION_IDS = [189]
+MAX_MOVES_FOR_PLAYER = 4
 
-
-def main():
+def main(N):
     tubemap = Graph()
+    populate_count = N
     tubemap.readnodefile('tfl_stations.csv')
     tubemap.readconnections('tfl_connections.csv')
-    populate_count = 500
     populate_map(tubemap, populate_count)
-    for i in xrange(0,10001):
-        move_random_owner(tubemap)
-        move_random_cat(tubemap)
+    while any_cats_missing(tubemap):
+        move_random_player(tubemap,'owner',populate_count)
+        move_random_player(tubemap,'cat',populate_count)
+    print 'done'
 #     results
+    found_sum = get_sum_cats_found(tubemap)
+    avg_cat_moves = get_average_number_cat_moves(tubemap)
+
     print """
     Total number of cats: {}
-    Number of cats found: 25
-    Average number of movements required to find a cat: 34
-""".format(populate_count)
+    Number of cats found: {}
+    Average number of movements required to find a cat: {}
+""".format(populate_count, found_sum, avg_cat_moves)
+
+def any_cats_missing(tubemap):
+    return any(
+        [tubemap.nodes[node_id].occupiers.cats for node_id in tubemap.nodes]
+    )
+
+def get_average_number_cat_moves(tubemap):
+    foundcats = [tubemap.nodes[node_id].occupiers.foundcats for node_id in tubemap.nodes]
+    foundcats_moves = [i.moves for i in itertools.chain.from_iterable(foundcats)]
+    avg_cat_moves = float(sum(foundcats_moves) / len(foundcats_moves)) if len(foundcats_moves) > 0 else 0
+    return avg_cat_moves
 
 
-def move_random_owner(tubemap):
+def get_sum_cats_found(tubemap):
+    found_sum = sum([1 for k in tubemap.nodes if tubemap.nodes[k].occupiers.open == False])
+    return found_sum
+
+
+def move_random_player(tubemap, player_type,populate_count):
+    """
+    :param tubemap: a Graph object
+    :param player_type: string: 'owner'|'cat'
+    :return: None
+    """
     stationcount = len(tubemap.nodes)
     random_node = tubemap.nodes[get_random_station_id(stationcount)]
     try:
-        random_owner = random.choice(list(random_node.occupiers.owners))
-        new_location = random_owner.move(random_node.connections)
-        if new_location is not None:
-            random_node.occupiers.remove_owner(random_owner)
-            tubemap.nodes[new_location].occupiers.addowner(random_owner)
-    except IndexError:
+        random_player = random.choice(list(getattr(random_node.occupiers, '%ss' % player_type)))
+        new_location = random_player.move(random_node.connections)
+        remove_fn = getattr(random_node.occupiers, 'remove_%s' % player_type)
+        remove_fn(random_player)
+        add_fn = getattr(tubemap.nodes[new_location].occupiers, 'add%s' % player_type)
+        random_player.moves += 1
+        if random_player.moves < MAX_MOVES_FOR_PLAYER:
+            add_fn(random_player)
+        else:
+            print 'this {} has moved {} times and is exhausted!'.format(player_type, MAX_MOVES_FOR_PLAYER)
+    except (NoDestinationException, AttributeError, IndexError):
         pass
-        # can't move if empty
-
-
-def move_random_cat(tubemap):
-    stationcount = len(tubemap.nodes)
-    random_node = tubemap.nodes[get_random_station_id(stationcount)]
-    try:
-        random_cat = random.choice(list(random_node.occupiers.cats))
-        new_location = random_cat.move(random_node.connections)
-        if new_location is not None:
-            random_node.occupiers.remove_cat(random_cat)
-            tubemap.nodes[new_location].occupiers.addcat(random_cat)
-    except IndexError:
-        pass
-        # can't move if empty
 
 
 def populate_map(tubemap, player_count):
@@ -73,4 +91,11 @@ def get_random_station_id(stationcount):
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='How many cats/owners?')
+    parser.add_argument('N',
+                        type=int,
+                       help='an integer')
+
+    args = parser.parse_args()
+    N = args.N
+    main(N)
